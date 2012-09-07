@@ -1,0 +1,156 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
+    <title>{{widgetTitle}}</title>
+    <style type="text/css" title="currentStyle">
+      @import "/static/media/css/demo_page.css";
+      @import "/static/media/css/demo_table.css";
+      select {
+        margin: 0 2;
+      }
+      #date_now {
+        font-size: 20;
+        text-align: center;
+      }
+      .year_statistic {
+        text-align: center;
+        font-size: 18;
+        color: blue;
+        background-color: yellow;
+      }
+      #links {
+        float: right;
+      }
+    </style>
+    <script type="text/javascript" src="/static/media/js/jquery.js"> </script>
+    <script type="text/javascript" src="/static/media/js/jquery.dataTables.js"> </script>
+</head>
+<body>
+  <div id="toolbar">
+    <form name="input" action="" method="get" accept-charset="utf-8">
+      Projetos:
+        <select name="project_id"/>
+          {% for key, value in projects %}
+            {% if html.project_id_selected == key %}
+              <option selected="selected" value="{{key}}">{{value}}</option>
+            {% else %}
+              <option value="{{key}}">{{value}}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+      Periodo: {% for field in dateInputForm %}{{ field }}{% endfor %}
+      Ano completo: <input type="checkbox" id="yearly_report" name="yearly_report" value="1" {% if html.year_check %}checked{%endif%}/>
+      Com detalhes: <input type="checkbox" id="detail_view" name="detail_view" value="1" {% if html.detail_check %}checked{%endif%}/>
+      <input type="submit" value="Pesquisar"/>
+    
+      <div id="links">
+        <a href="{% url viewer.zenapp.views.index %}">Zendesk</a>
+        <a href="{% url viewer.redapp.views.index %}">Redmine</a>
+      </div>
+    
+    </form>
+    
+  </div>
+  <div id="date_now"><b>{{date_now}}</b></div>
+  
+  {% if meta_year.active %}
+    <div class="year_statistic"><b>
+    <div>
+        {% if meta_month.active and not meta_year.active %}
+          Plano mensal: {{meta_month.statistic.plan_hours}}h 
+          - Adicionais: {{meta_month.statistic.hours_add}}h 
+          - Total: {{meta_month.statistic.total_hours}}h 
+          - Estimado: {{meta_month.statistic.estimated}}h 
+          - Consumido: {{meta_month.statistic.spent}}h 
+          - Restante: {{meta_month.statistic.remainder}}h
+        {% endif %}
+    </div>
+    <div>
+      Plano anual: {{meta_year.statistic.yearly_hours}}h
+      {% if meta_year.active %}
+        - Consumido: {{meta_year.statistic.yearly_spent}}h 
+        - Restante: {{meta_year.statistic.yearly_remainder}}h
+      {% endif %}
+    </div>
+    </b></div>
+  {% endif %}
+  
+  <div id="viewer_table"></div>
+  
+  <script type="text/javascript">
+  $(document).ready(function() {
+    $('#viewer_table').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="list_table"></table>');
+    var oTable = $('#list_table').dataTable({
+      "oLanguage": {
+        "sProcessing":   "Processando...",
+        "sLengthMenu":   "Mostrar _MENU_ registros",
+        "sZeroRecords":  "Não foram encontrados resultados",
+        "sInfo":         "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+        "sInfoEmpty":    "Mostrando de 0 até 0 de 0 registros",
+        "sInfoFiltered": "(filtrado de _MAX_ registros no total)",
+        "sInfoPostFix":  "",
+        "sSearch":       "Buscar:",
+        "sUrl":          "",
+        "oPaginate": {
+          "sFirst":    "Primeiro",
+          "sPrevious": "Anterior",
+          "sNext":     "Seguinte",
+          "sLast":     "Último"
+        }
+      },
+      "aoColumnDefs": [
+        { "sClass": "left", "aTargets": [2] }
+      ],
+      "bAutoWidth": false,
+      "bStateSave": true,
+      "iDisplayLength": 25,
+      "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
+      
+      "aoColumns": [
+        {% for header in  headers %}
+          {"sTitle": "{{ header }}", "sClass":{% ifequal header "Assunto" %}"left"{% else %}"center"{% endifequal %} },
+        {% endfor %}
+      ],
+      "aaData": [
+        {% for slist in rlist %} [
+          {% for item in slist %} "{{ item }}",
+          {% endfor %}],
+        {% endfor %}]
+    });
+    
+    $("#yearly_report").click(function() {
+      var selectObject = $("#id_period_month");
+      if ($(this).is(":checked")) {
+        selectObject.attr('disabled', 'disabled');
+      } else {
+        selectObject.removeAttr('disabled');
+      }
+    });
+    
+  });
+  </script>
+    <br/>
+    <div class="year_statistic"><b>
+      <div>
+        {% if meta_month.active and not meta_year.active %}
+          Plano mensal: {{meta_month.statistic.plan_hours}}h 
+          - Adicionais: {{meta_month.statistic.hours_add}}h 
+          - Total: {{meta_month.statistic.total_hours}}h 
+          - Estimado: {{meta_month.statistic.estimated}}h 
+          - Consumido: {{meta_month.statistic.spent}}h 
+          - Restante: {{meta_month.statistic.remainder}}h
+        {% endif %}
+      </div>
+      <div>
+        {% if meta_year.statistic.yearly_hours %}
+          Plano anual: {{meta_year.statistic.yearly_hours}}h
+        {% endif %}
+        {% if meta_year.active %}
+          - Consumido: {{meta_year.statistic.yearly_spent}}h 
+          - Restante: {{meta_year.statistic.yearly_remainder}}h
+        {% endif %}
+      </div>
+    </b></div>
+  </body>
+</html>
+

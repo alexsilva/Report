@@ -1,0 +1,41 @@
+K 25
+svn:wc:ra_dav:version-url
+V 32
+/svn/!svn/ver/99/trunk/src/tests
+END
+alltests.py
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/23/trunk/src/tests/alltests.py
+END
+util_test.py
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/98/trunk/src/tests/util_test.py
+END
+connection_test.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/svn/!svn/ver/48/trunk/src/tests/connection_test.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 43
+/svn/!svn/ver/5/trunk/src/tests/__init__.py
+END
+activeresource_test.py
+K 25
+svn:wc:ra_dav:version-url
+V 55
+/svn/!svn/ver/99/trunk/src/tests/activeresource_test.py
+END
+http_fake.py
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/91/trunk/src/tests/http_fake.py
+END

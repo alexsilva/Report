@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 26
+/svn/!svn/ver/99/trunk/src
+END
+formats.py
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/77/trunk/src/formats.py
+END
+util.py
+K 25
+svn:wc:ra_dav:version-url
+V 34
+/svn/!svn/ver/98/trunk/src/util.py
+END
+element_containers.py
+K 25
+svn:wc:ra_dav:version-url
+V 48
+/svn/!svn/ver/77/trunk/src/element_containers.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 37
+/svn/!svn/ver/5/trunk/src/__init__.py
+END
+connection.py
+K 25
+svn:wc:ra_dav:version-url
+V 40
+/svn/!svn/ver/91/trunk/src/connection.py
+END
+activeresource.py
+K 25
+svn:wc:ra_dav:version-url
+V 44
+/svn/!svn/ver/99/trunk/src/activeresource.py
+END
+fake_connection.py
+K 25
+svn:wc:ra_dav:version-url
+V 45
+/svn/!svn/ver/25/trunk/src/fake_connection.py
+END
