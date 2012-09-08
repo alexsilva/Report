@@ -7,7 +7,7 @@ import viewer.main.views
 import redclient
 
 # -------------------------------------------------
-def index(request):
+def report_load(request):
     param = viewer.main.views.get_params( request )
     params = {
         "title": redclient.Redmine.name,

@@ -1,14 +1,13 @@
 # coding: utf-8
 import sys, os
-import datetime
-import calendar
-import urllib
 import re
-sys.path.insert(0, "C:\Users\Alex Sandro\Desktop\Django-1.4")
 
+sys.path.insert(0, "C:\Users\Alex Sandro\Desktop\Django-1.4")
 curdir = os.path.dirname(os.path.abspath(__file__))
+
 pardir = os.path.dirname(curdir)
 if not pardir in sys.path: sys.path.append( pardir )
+
 packdir = os.path.join(pardir, "packets")
 if not packdir in sys.path: sys.path.append( packdir )
 
@@ -21,6 +20,7 @@ if __name__ == "__main__":
     
 from viewer.main import shared
 import zendesk
+import configobj
 
 # --------------------------------------------------------------------------
 def get(attrs, name):
@@ -60,11 +60,14 @@ def custom_strip(value):
     return value
 
 ############################################################################
-class Zendesk(object):    
-    url = None
-    email = None
-    password = None
-    use_api_token = None
+crendpath = os.path.join(pardir, "credentials", "cred.cfg")
+cred_params = configobj.ConfigObj(crendpath)
+
+class Zendesk(object):
+    use_api_token = cred_params.as_bool("use_api_token")
+    password = cred_params["password"]
+    email = cred_params["email"]
+    url = cred_params["url"]
     
     name = "ZENDESK"
     #----------------------------------------------------------------------

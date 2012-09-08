@@ -1,9 +1,9 @@
 # -*- coding: UTF-8 -*-
-import os, sys, json
-import urllib
-import urllib2
-import datetime
-import calendar
+import os, sys
+import json, urllib2
+
+curdir = os.path.dirname(os.path.abspath(__file__))
+pardir = os.path.dirname(curdir)
 
 # para executar o script, ele deve estar devidamente configurado.
 if __name__ == '__main__':
@@ -14,11 +14,15 @@ if __name__ == '__main__':
     os.environ["DJANGO_SETTINGS_MODULE"] = basename+".settings"
 
 from viewer.main import shared
+import configobj
 
 ########################################################################
+crendpath = os.path.join(pardir, "credentials", "cred.cfg")
+cred_params = configobj.ConfigObj(crendpath)
+
 class Redmine(object):
-    site = None
-    key = None
+    site = cred_params["site"]
+    key = cred_params["key"]
     # --------------------------------------------------------
     name = "REDMINE"
 

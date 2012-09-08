@@ -6,7 +6,7 @@ from viewer.main import shared
 import zenclient
 # --------------------------------------------------------------------
 
-def index(request):
+def report_load(request):
     param = viewer.main.views.get_params( request )
     params = {
         "title": zenclient.Zendesk.name,
