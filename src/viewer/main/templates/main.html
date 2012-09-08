@@ -18,8 +18,9 @@
         color: blue;
         background-color: yellow;
       }
-      #links {
+      #zen_x_red {
         float: right;
+		margin-right: 5;
       }
     </style>
     <script type="text/javascript" src="/static/media/js/jquery.js"> </script>
@@ -43,8 +44,8 @@
       Com detalhes: <input type="checkbox" id="detail_view" name="detail_view" value="1" {% if html.detail_check %}checked{%endif%}/>
       <input type="submit" value="Pesquisar"/>
     
-      <div id="links">
-        <a href="{% url viewer.zenapp.views.report_load %}">Zendesk</a>
+      <div id="zen_x_red">
+        <a href="{% url viewer.zenapp.views.report_load %}">Zendesk</a>&nbsp;
         <a href="{% url viewer.redapp.views.report_load %}">Redmine</a>
       </div>
     
@@ -117,16 +118,29 @@
           {% endfor %}],
         {% endfor %}]
     });
-    
-    $("#yearly_report").click(function() {
-      var selectObject = $("#id_period_month");
-      if ($(this).is(":checked")) {
-        selectObject.attr('disabled', 'disabled');
-      } else {
-        selectObject.removeAttr('disabled');
-      }
-    });
-    
+    var report = new function() {
+		this.nsp = {
+			// desativa um objeto(element), marcando o checkbox alvo.
+			disable : function(element_id, checkbox) {
+				if (element_id[0] != "#") element_id = "#"+element_id
+				var object = $( element_id );
+				if ($( checkbox ).is(":checked")) {
+					object.attr('disabled', 'disabled');
+				} else {
+					object.removeAttr('disabled');
+				}
+			},
+			init: function() {
+				var self = this;
+				var checkbox = $("#yearly_report");
+				checkbox.click(function () {
+					self.disable("id_period_month", this);
+				});
+				this.disable("id_period_month", checkbox);
+			}
+		}
+	}
+	report.nsp.init();
   });
   </script>
     <br/>
