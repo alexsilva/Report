@@ -13,9 +13,7 @@ def getDateISOFormat(dateString):
 class ReportHeader(object):
     """ armazena os headers da representação dos dados """
     full = (
-        ##("Projeto", "project"), 
         ("Data", "created"),
-        ("ID", "id"),
         ("Plano mensal", "plan_hours"),
         ("Horas Adicionais", "hours_add"),
         ("Horas Totais", "total_hours"),
@@ -24,7 +22,6 @@ class ReportHeader(object):
         ("Horas Restantes", "remainder")
     )
     simple = (
-        ##("Projeto", "project"),
         ("Data", "created"),
         ("ID", "id"),
         ("Assunto", "subject"),
