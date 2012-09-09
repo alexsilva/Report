@@ -22,6 +22,9 @@
         float: right;
 		margin-right: 5;
       }
+	  td {
+		text-align: center;
+	  }
     </style>
     <script type="text/javascript" src="/static/media/js/jquery.js"> </script>
     <script type="text/javascript" src="/static/media/js/jquery.dataTables.js"> </script>
@@ -58,20 +61,28 @@
     <div class="year_statistic"><b>
     <div>
         {% if meta_month.active and not meta_year.active %}
-          Plano mensal: {{meta_month.statistic.plan_hours}}h 
-          - Adicionais: {{meta_month.statistic.hours_add}}h 
-          - Total: {{meta_month.statistic.total_hours}}h 
-          - Estimado: {{meta_month.statistic.estimated}}h 
-          - Consumido: {{meta_month.statistic.spent}}h 
-          - Restante: {{meta_month.statistic.remainder}}h
+		<table border="1" width="100%">
+			<tr>
+				<td>Plano mensal: {{meta_month.statistic.plan_hours}}h</td>
+				<td>Adicionais: {{meta_month.statistic.hours_add}}h</td>
+				<td>Total: {{meta_month.statistic.total_hours}}h</td>
+				<td>Estimado: {{meta_month.statistic.estimated}}h</td>
+				<td>Consumido: {{meta_month.statistic.spent}}h</td>
+				<td>Restante: {{meta_month.statistic.remainder}}h</td>
+			</tr>
+		</table>
         {% endif %}
     </div>
     <div>
-      Plano anual: {{meta_year.statistic.yearly_hours}}h
-      {% if meta_year.active %}
-        - Consumido: {{meta_year.statistic.yearly_spent}}h 
-        - Restante: {{meta_year.statistic.yearly_remainder}}h
-      {% endif %}
+		<table border="1" width="100%">
+			<tr>
+				<td>Plano anual: {{meta_year.statistic.yearly_hours}}h</td>
+				{% if meta_year.active %}
+					<td>Consumido: {{meta_year.statistic.yearly_spent}}h</td>
+					<td>Restante: {{meta_year.statistic.yearly_remainder}}h</td>
+				{% endif %}
+			</tr>
+		</table>
     </div>
     </b></div>
   {% endif %}
@@ -146,23 +157,31 @@
     <br/>
     <div class="year_statistic"><b>
       <div>
-        {% if meta_month.active and not meta_year.active %}
-          Plano mensal: {{meta_month.statistic.plan_hours}}h 
-          - Adicionais: {{meta_month.statistic.hours_add}}h 
-          - Total: {{meta_month.statistic.total_hours}}h 
-          - Estimado: {{meta_month.statistic.estimated}}h 
-          - Consumido: {{meta_month.statistic.spent}}h 
-          - Restante: {{meta_month.statistic.remainder}}h
-        {% endif %}
+		{% if meta_month.active and not meta_year.active %}
+			<table border="1" width="100%">
+				<tr>
+					<td>Plano mensal: {{meta_month.statistic.plan_hours}}h</td>
+					<td>Adicionais: {{meta_month.statistic.hours_add}}h</td>
+					<td>Total: {{meta_month.statistic.total_hours}}h</td>
+					<td>Estimado: {{meta_month.statistic.estimated}}h</td>
+					<td>Consumido: {{meta_month.statistic.spent}}h</td>
+					<td>Restante: {{meta_month.statistic.remainder}}h</td>
+				</tr>
+			</table>
+		{% endif %}
       </div>
       <div>
-        {% if meta_year.statistic.yearly_hours %}
-          Plano anual: {{meta_year.statistic.yearly_hours}}h
-        {% endif %}
-        {% if meta_year.active %}
-          - Consumido: {{meta_year.statistic.yearly_spent}}h 
-          - Restante: {{meta_year.statistic.yearly_remainder}}h
-        {% endif %}
+		<table border="1" width="100%">
+			<tr>
+				{% if meta_year.statistic.yearly_hours %}
+					<td>Plano anual: {{meta_year.statistic.yearly_hours}}h</td>
+				{% endif %}
+				{% if meta_year.active %}
+					<td>Consumido: {{meta_year.statistic.yearly_spent}}h</td>
+					<td>Restante: {{meta_year.statistic.yearly_remainder}}h</td>
+				{% endif %}
+			</tr>
+		</table>
       </div>
     </b></div>
   </body>
