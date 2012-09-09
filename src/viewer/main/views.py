@@ -60,8 +60,6 @@ def get_response(request, param, **params):
         "month": param.period_month, 
         "year": param.period_year
     }
-    # gastos de horas anuais.
-    yearly_hours = yeary_spent = 0.0
     statistic = params["statistic"]
     
     if param.detail_view:
