@@ -35,12 +35,12 @@
       Projetos:
 	  <select name="project_id"/>
 		{% for key, value in projects %}
-		  <option value="{{key}}" {% if html.project_id_selected == key%} selected="selected"{% endif %}>{{value}}</option>
+		  <option value="{{key}}" {% if params.project_id_selected == key%} selected="selected"{% endif %}>{{value}}</option>
 		{% endfor %}
 	  </select>
       Periodo: {% for field in dateInputForm %}{{ field }}{% endfor %}
-      Ano completo: <input type="checkbox" id="yearly_report" name="yearly_report" value="1" {% if html.year_check %}checked{%endif%}/>
-      Com detalhes: <input type="checkbox" id="detail_view" name="detail_view" value="1" {% if html.detail_check %}checked{%endif%}/>
+      Ano completo: <input type="checkbox" id="yearly_report" name="yearly_report" value="1" {% if params.yearly_report %}checked{%endif%}/>
+      Com detalhes: <input type="checkbox" id="detail_view" name="detail_view" value="1" {% if params.detail_view %}checked{%endif%}/>
       <input type="submit" value="Pesquisar"/>
     
       <div id="zen_x_red">
@@ -153,19 +153,23 @@
 	<br/>
 	<div class="year_statistic">
 	{% if params.statistic.hasYearlyPlan and params.statistic.yearlyplan.is_active %}
-	  {% if params.detail_view and not params.yearly_report and params.statistic.checkMonthYear %}
-		<div>
-		  <table border="1" width="100%" rules="cols">
-			<tr>
-				<td>Plano mensal: {{params.statistic.plan_hours}}h</td>
-				<td>Adicionais: {{params.statistic.hours_add}}h</td>
-				<td>Total: {{params.statistic.total_hours}}h</td>
-				<td>Estimado: {{params.statistic.estimated}}h</td>
-				<td>Consumido: {{params.statistic.spent}}h</td>
-				<td>Restante: {{params.statistic.remainder}}h</td>
-			</tr>
-		  </table>
-		</div>
+	  {% if params.statistic.checkMonthYear %}
+		{% if params.detail_view and not params.yearly_report%}
+		  <div>
+			<table border="1" width="100%" rules="cols">
+			  <tr>
+				  <td>Plano mensal: {{params.statistic.plan_hours}}h</td>
+				  <td>Adicionais: {{params.statistic.hours_add}}h</td>
+				  <td>Total: {{params.statistic.total_hours}}h</td>
+				  <td>Estimado: {{params.statistic.estimated}}h</td>
+				  <td>Consumido: {{params.statistic.spent}}h</td>
+				  <td>Restante: {{params.statistic.remainder}}h</td>
+			  </tr>
+			</table>
+		  </div>
+		{% endif %}
+	  {% else %}
+		<div>Parece que o plano para esse ano, não inclui esse mês.</div>
 	  {% endif %}
 	  
 	  {% if params.yearly_report %}
@@ -179,8 +183,10 @@
 		  </table>
 		</div>
 	  {% endif %}
-	</div>
-  {% endif %}
+	{% else %}
+	  <div>Não há um plano anual, cadastrado(ativo) para está data(mês/ano).</div>
+	{% endif %}
+  </div>
   </body>
 </html>
 
