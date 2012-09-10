@@ -134,7 +134,7 @@ class Redmine(object):
         
         static = shared.ReportHeader.getBaseDict()
         static["project"] = self.statistic["project"]
-        created = shared.getDateISOFormat(
+        created = shared.getFormatedDate(
             _issue.get("created_on", self.statistic.get_date()))
         static["created"] = created
         static["estimated"] = estimated
