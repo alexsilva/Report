@@ -1,6 +1,5 @@
 # coding: utf-8
-import sys, os
-import re
+import sys, os, re
 
 sys.path.insert(0, "C:\Users\Alex Sandro\Desktop\Django-1.4")
 curdir = os.path.dirname(os.path.abspath(__file__))
@@ -19,8 +18,7 @@ if __name__ == "__main__":
     os.environ["DJANGO_SETTINGS_MODULE"] = basename + ".settings"
     
 from viewer.main import shared
-import zendesk
-import configobj
+import zendesk, configobj
 
 # --------------------------------------------------------------------------
 def get(attrs, name):
@@ -87,11 +85,13 @@ class Zendesk(object):
         self.project_id = project_id
         self.month = month
         self.year = year
-        
+    
     def get_tickets(self):
-        date = self.statistic.date
+        date = self.statistic.get_date()
+        
         start = "%d-%02d-%02d"%(date.year, date.month, 1)
         finish = "%d-%02d-%02d"%(date.year, date.month, date.day)
+        
         created = "created>%s created<%s"%(start, finish)
         organization = "organization:%s"% self.organization
         query = "type:ticket %s %s"%(created, organization)
@@ -117,7 +117,7 @@ class Zendesk(object):
                 break # evita trabalho desnecessário.
         return hours
     
-    def update_remainder_hours(self):
+    def update_remainder(self):
         if self.statistic["total_hours"] > 0.0:
             remainder = self.statistic["total_hours"] - self.statistic["spent"]
             self.statistic["remainder"] = remainder
@@ -125,7 +125,7 @@ class Zendesk(object):
     def get_statistc_data(self, detail_view=False):
         for ticket in self.get_tickets():
             self.update_statistic( ticket )
-        self.update_remainder_hours()
+        self.update_remainder()
         if detail_view:
             data = self.ticket_statistics
         else:
@@ -133,6 +133,13 @@ class Zendesk(object):
         return data
     
     def update_statistic(self, ticket):
+        ticket_created_at = ticket["created_at"]
+        
+        created_dt = shared.convertToDatetime( ticket_created_at )
+        start_date = self.statistic.yearlyPlanStartDate
+        if (created_dt.date() - start_date).days < 0:
+            return
+        
         fields = get(ticket, self.field_entries)
         hours = self.hours_handle( fields )
         
@@ -143,11 +150,10 @@ class Zendesk(object):
         
         # o uso externo da instace de 'statistic', garante a soma de todos os meses
         self.statistic.add_yearly_spent( spent )
-        self.update_remainder_hours()
+        self.update_remainder()
         
         static = shared.ReportHeader.getBaseDict()
-        static["project"] = self.statistic["project"]
-        created = shared.getDateISOFormat(ticket["created_at"])
+        created = shared.getFormatedDate( ticket_created_at )
         static["created"] = created
         static["estimated"] = estimated
         static["spent"] = spent
