@@ -61,7 +61,7 @@
     <div class="year_statistic"><b>
     <div>
         {% if meta_month.active and not meta_year.active %}
-		<table border="1" width="100%">
+		<table border="1" width="100%" rules="cols">
 			<tr>
 				<td>Plano mensal: {{meta_month.statistic.plan_hours}}h</td>
 				<td>Adicionais: {{meta_month.statistic.hours_add}}h</td>
@@ -74,7 +74,7 @@
         {% endif %}
     </div>
     <div>
-		<table border="1" width="100%">
+		<table border="1" width="100%" rules="cols">
 			<tr>
 				<td>Plano anual: {{meta_year.statistic.yearly_hours}}h</td>
 				{% if meta_year.active %}
@@ -156,9 +156,9 @@
   </script>
     <br/>
     <div class="year_statistic"><b>
-      <div>
+		<div>
 		{% if meta_month.active and not meta_year.active %}
-			<table border="1" width="100%">
+			<table border="1" width="100%" rules="cols">
 				<tr>
 					<td>Plano mensal: {{meta_month.statistic.plan_hours}}h</td>
 					<td>Adicionais: {{meta_month.statistic.hours_add}}h</td>
@@ -169,21 +169,23 @@
 				</tr>
 			</table>
 		{% endif %}
-      </div>
-      <div>
-		<table border="1" width="100%">
-			<tr>
-				{% if meta_year.statistic.yearly_hours %}
-					<td>Plano anual: {{meta_year.statistic.yearly_hours}}h</td>
-				{% endif %}
-				{% if meta_year.active %}
-					<td>Consumido: {{meta_year.statistic.yearly_spent}}h</td>
-					<td>Restante: {{meta_year.statistic.yearly_remainder}}h</td>
-				{% endif %}
-			</tr>
-		</table>
-      </div>
-    </b></div>
+		</div>
+		{% if meta_year.statistic.yearly_hours or meta_year.active %}
+			<div>
+				<table border="1" width="100%" rules="cols">
+					<tr>
+						{% if meta_year.statistic.yearly_hours %}
+							<td>Plano anual: {{meta_year.statistic.yearly_hours}}h</td>
+						{% endif %}
+						{% if meta_year.active %}
+							<td>Consumido: {{meta_year.statistic.yearly_spent}}h</td>
+							<td>Restante: {{meta_year.statistic.yearly_remainder}}h</td>
+						{% endif %}
+					</tr>
+				</table>
+			</div>
+		{% endif %}
+	</b></div>
   </body>
 </html>
 
