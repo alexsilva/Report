@@ -122,7 +122,16 @@ class Statistic(object):
         }
     def __str__(self):
         return "\n".join(["%s: %s"%(k, self.statistic[k])for k in self.statistic])
-        
+    
+    def hasYealyPlan(self):
+        """ avalia se algum plano válido foi encontrado para o mês/ano"""
+        return bool(self.yearlyplan)
+    
+    def isValidMonthYear(self, month, year):
+        """ verifica se o mês e o ano são cobertos pelo plano anual """
+        start_dt = self.yearlyplan.getStartDate()
+        return (start_dt.month <= month and start_dt.year <= year)
+    
     def get(self, name, default):
         return self.statistic.get(name, default)
     

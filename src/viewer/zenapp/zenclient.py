@@ -135,10 +135,11 @@ class Zendesk(object):
     def update_statistic(self, ticket):
         ticket_created_at = ticket["created_at"]
         
+        # ignora tickets anteriores a data do plano anual
         created_dt = shared.convertToDatetime( ticket_created_at )
-        start_date = self.statistic.yearlyPlanStartDate
-        if (created_dt.date() - start_date).days < 0:
-            return
+        start_dt = self.statistic.yearlyPlanStartDate
+        
+        if (created_dt.date() - start_dt).days < 0: return
         
         fields = get(ticket, self.field_entries)
         hours = self.hours_handle( fields )

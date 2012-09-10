@@ -22,19 +22,22 @@ def report_load(request):
             param.project_id, param.period_year, 
             param.period_month)
         
-        for month in xrange(month_start, month_end+1):
-            statistic.update(param.period_year, month)
-            
-            zendesk = zenclient.Zendesk(
-                project_id = param.project_id, 
-                year = param.period_year, month = month,
-                statistic = statistic
-            )
-            data = zendesk.get_statistc_data(param.detail_view)
-            
-            if type(data) is list:
-                params["statistic_data"].extend( data )
-            else:
-                params["statistic_data"].append( data )
-            
+        if statistic.hasYealyPlan() and statistic.yearlyplan.is_active:
+            for month in xrange(month_start, month_end+1):
+                if not statistic.isValidMonthYear(month, param.period_year):
+                    continue
+                
+                statistic.update(param.period_year, month)
+                
+                zendesk = zenclient.Zendesk(
+                    project_id = param.project_id, 
+                    year = param.period_year, month = month,
+                    statistic = statistic
+                )
+                data = zendesk.get_statistc_data(param.detail_view)
+                
+                if type(data) is list:
+                    params["statistic_data"].extend( data )
+                else:
+                    params["statistic_data"].append( data )
     return viewer.main.views.get_response(request, param, **params)
