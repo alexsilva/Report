@@ -10,6 +10,9 @@ def getFormatedDate(dateString):
     p = parser.parse(dateString)
     return p.strftime("%d/%m/%Y às %H:%M:%S")
 
+def convertToDatetime(dataString):
+    return parser.parse( dataString )
+    
 class ReportHeader(object):
     """ armazena os headers da representação dos dados """
     full = (
