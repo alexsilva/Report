@@ -142,6 +142,12 @@ class Statistic(object):
     def yearly_remainder(self):
         return (self.yearly_hours - self.yearly_spent)
     
+    @property
+    def yearlyPlanStartDate(self):
+        """ retorna a data inicial do plano anual """
+        method = getattr(self.yearlyplan,"getStartDate",datetime.datetime.now)
+        return method()
+    
     @staticmethod
     def getDateForYearMonth(year, month):
         now = datetime.datetime.now()
@@ -152,7 +158,7 @@ class Statistic(object):
         maxdays = calendar.monthrange(year, month)[-1]
         d = datetime.datetime(year, month, maxdays)
         return d.date()
-        
+    
     def __getitem__(self, key):
         return self.statistic[key]
 
