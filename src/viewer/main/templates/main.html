@@ -33,15 +33,11 @@
   <div id="toolbar">
     <form name="input" action="" method="get" accept-charset="utf-8">
       Projetos:
-        <select name="project_id"/>
-          {% for key, value in projects %}
-            {% if html.project_id_selected == key %}
-              <option selected="selected" value="{{key}}">{{value}}</option>
-            {% else %}
-              <option value="{{key}}">{{value}}</option>
-            {% endif %}
-          {% endfor %}
-        </select>
+	  <select name="project_id"/>
+		{% for key, value in projects %}
+		  <option value="{{key}}" {% if html.project_id_selected == key%} selected="selected"{% endif %}>{{value}}</option>
+		{% endfor %}
+	  </select>
       Periodo: {% for field in dateInputForm %}{{ field }}{% endfor %}
       Ano completo: <input type="checkbox" id="yearly_report" name="yearly_report" value="1" {% if html.year_check %}checked{%endif%}/>
       Com detalhes: <input type="checkbox" id="detail_view" name="detail_view" value="1" {% if html.detail_check %}checked{%endif%}/>
@@ -51,42 +47,42 @@
         <a href="{% url viewer.zenapp.views.report_load %}">Zendesk</a>&nbsp;
         <a href="{% url viewer.redapp.views.report_load %}">Redmine</a>
       </div>
-    
     </form>
-    
   </div>
+
   <div id="date_now"><b>{{date_now}}</b></div>
-  
-  {% if meta_year.active %}
-    <div class="year_statistic"><b>
-    <div>
-        {% if meta_month.active and not meta_year.active %}
-		<table border="1" width="100%" rules="cols">
-			<tr>
-				<td>Plano mensal: {{meta_month.statistic.plan_hours}}h</td>
-				<td>Adicionais: {{meta_month.statistic.hours_add}}h</td>
-				<td>Total: {{meta_month.statistic.total_hours}}h</td>
-				<td>Estimado: {{meta_month.statistic.estimated}}h</td>
-				<td>Consumido: {{meta_month.statistic.spent}}h</td>
-				<td>Restante: {{meta_month.statistic.remainder}}h</td>
-			</tr>
-		</table>
-        {% endif %}
-    </div>
-    <div>
-		<table border="1" width="100%" rules="cols">
-			<tr>
-				<td>Plano anual: {{meta_year.statistic.yearly_hours}}h</td>
-				{% if meta_year.active %}
-					<td>Consumido: {{meta_year.statistic.yearly_spent}}h</td>
-					<td>Restante: {{meta_year.statistic.yearly_remainder}}h</td>
-				{% endif %}
-			</tr>
-		</table>
-    </div>
-    </b></div>
+  {% if params.statistic.hasYearlyPlan and params.statistic.yearlyplan.is_active %}
+	{% if params.detail_view %}
+	  <div class="year_statistic">
+		{% if not params.yearly_report %}
+		  {% if params.statistic.checkMonthYear %}
+			<div>
+			  <table border="1" width="100%" rules="cols">
+				<tr>
+				  <td>Plano mensal: {{params.statistic.plan_hours}}h</td>
+				  <td>Adicionais: {{params.statistic.hours_add}}h</td>
+				  <td>Total: {{params.statistic.total_hours}}h</td>
+				  <td>Estimado: {{params.statistic.estimated}}h</td>
+				  <td>Consumido: {{params.statistic.spent}}h</td>
+				  <td>Restante: {{params.statistic.remainder}}h</td>
+				</tr>
+			  </table>
+			</div>
+		  {% endif %}
+		{% else %}
+		  <div>
+			<table border="1" width="100%" rules="cols">
+			  <tr>
+				<td>Plano anual: {{params.statistic.yearly_hours}}h</td>
+				<td>Consumido: {{params.statistic.yearly_spent}}h</td>
+				<td>Restante: {{params.statistic.yearly_remainder}}h</td>
+			  </tr>
+			</table>
+		  </div>
+		{% endif %}
+	  </div>
+	{% endif %}
   {% endif %}
-  
   <div id="viewer_table"></div>
   
   <script type="text/javascript">
@@ -130,62 +126,61 @@
         {% endfor %}]
     });
     var report = new function() {
-		this.nsp = {
-			// desativa um objeto(element), marcando o checkbox alvo.
-			disable : function(element_id, checkbox) {
-				if (element_id[0] != "#") element_id = "#"+element_id
-				var object = $( element_id );
-				if ($( checkbox ).is(":checked")) {
-					object.attr('disabled', 'disabled');
-				} else {
-					object.removeAttr('disabled');
-				}
-			},
-			init: function() {
-				var self = this;
-				var checkbox = $("#yearly_report");
-				checkbox.click(function () {
-					self.disable("id_period_month", this);
-				});
-				this.disable("id_period_month", checkbox);
-			}
-		}
+	  this.nsp = {
+		  // desativa um objeto(element), marcando o checkbox alvo.
+		  disable : function(element_id, checkbox) {
+			  if (element_id[0] != "#") element_id = "#"+element_id
+			  var object = $( element_id );
+			  if ($( checkbox ).is(":checked")) {
+				  object.attr('disabled', 'disabled');
+			  } else {
+				  object.removeAttr('disabled');
+			  }
+		  },
+		  init: function() {
+			  var self = this;
+			  var checkbox = $("#yearly_report");
+			  checkbox.click(function () {
+				  self.disable("id_period_month", this);
+			  });
+			  this.disable("id_period_month", checkbox);
+		  }
+	  }
 	}
 	report.nsp.init();
   });
   </script>
-    <br/>
-    <div class="year_statistic"><b>
+	<br/>
+	<div class="year_statistic">
+	{% if params.statistic.hasYearlyPlan and params.statistic.yearlyplan.is_active %}
+	  {% if params.detail_view and not params.yearly_report and params.statistic.checkMonthYear %}
 		<div>
-		{% if meta_month.active and not meta_year.active %}
-			<table border="1" width="100%" rules="cols">
-				<tr>
-					<td>Plano mensal: {{meta_month.statistic.plan_hours}}h</td>
-					<td>Adicionais: {{meta_month.statistic.hours_add}}h</td>
-					<td>Total: {{meta_month.statistic.total_hours}}h</td>
-					<td>Estimado: {{meta_month.statistic.estimated}}h</td>
-					<td>Consumido: {{meta_month.statistic.spent}}h</td>
-					<td>Restante: {{meta_month.statistic.remainder}}h</td>
-				</tr>
-			</table>
-		{% endif %}
+		  <table border="1" width="100%" rules="cols">
+			<tr>
+				<td>Plano mensal: {{params.statistic.plan_hours}}h</td>
+				<td>Adicionais: {{params.statistic.hours_add}}h</td>
+				<td>Total: {{params.statistic.total_hours}}h</td>
+				<td>Estimado: {{params.statistic.estimated}}h</td>
+				<td>Consumido: {{params.statistic.spent}}h</td>
+				<td>Restante: {{params.statistic.remainder}}h</td>
+			</tr>
+		  </table>
 		</div>
-		{% if meta_year.statistic.yearly_hours or meta_year.active %}
-			<div>
-				<table border="1" width="100%" rules="cols">
-					<tr>
-						{% if meta_year.statistic.yearly_hours %}
-							<td>Plano anual: {{meta_year.statistic.yearly_hours}}h</td>
-						{% endif %}
-						{% if meta_year.active %}
-							<td>Consumido: {{meta_year.statistic.yearly_spent}}h</td>
-							<td>Restante: {{meta_year.statistic.yearly_remainder}}h</td>
-						{% endif %}
-					</tr>
-				</table>
-			</div>
-		{% endif %}
-	</b></div>
+	  {% endif %}
+	  
+	  {% if params.yearly_report %}
+		<div>
+		  <table border="1" width="100%" rules="cols">
+			<tr>
+			  <td>Plano anual: {{params.statistic.yearly_hours}}h</td>
+			  <td>Consumido: {{params.statistic.yearly_spent}}h</td>
+			  <td>Restante: {{params.statistic.yearly_remainder}}h</td>
+			</tr>
+		  </table>
+		</div>
+	  {% endif %}
+	</div>
+  {% endif %}
   </body>
 </html>
 

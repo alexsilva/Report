@@ -133,6 +133,11 @@ class Statistic(object):
         start_dt = self.yearlyplan.getStartDate()
         return (start_dt.month <= month and start_dt.year <= year)
     
+    @property
+    def checkMonthYear(self):
+        date = self.get_date()
+        return self.isValidMonthYear(date.month, date.year)
+    
     def get(self, name, default):
         return self.statistic.get(name, default)
     

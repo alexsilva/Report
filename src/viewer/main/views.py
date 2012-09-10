@@ -74,12 +74,9 @@ def get_response(request, param, **params):
         "dateInputForm": dateInputForm,
         "headers": headers,
         "rlist": get_hlist_groups(params["statistic_data"], headersItem),
-        "meta_year": {
-            "active": param.yearly_report,
-            "statistic": statistic
-        },
-        "meta_month": {
-            "active": param.detail_view,
+        "params": {
+            "yearly_report": param.yearly_report,
+            "detail_view": param.detail_view,
             "statistic": statistic
         },
         "projects": [(q.key, q.name) for q in Project.objects.all()],
