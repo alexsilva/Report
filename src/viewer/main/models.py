@@ -54,6 +54,11 @@ class YearlyPlan(models.Model):
 		""" ativo se não expirado e for um plano válido """
 		return (not self.expired and self.active)
 	
+	@property
+	def is_active(self):
+		""" informa se o plano é válido """
+		return self.active
+	
 	def getStartDate(self):
 		""" retorna a data em que o plano começou """
 		return self.created_at
