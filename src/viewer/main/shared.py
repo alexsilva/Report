@@ -123,7 +123,8 @@ class Statistic(object):
     def __str__(self):
         return "\n".join(["%s: %s"%(k, self.statistic[k])for k in self.statistic])
     
-    def hasYealyPlan(self):
+    @property
+    def hasYearlyPlan(self):
         """ avalia se algum plano válido foi encontrado para o mês/ano"""
         return bool(self.yearlyplan)
     
