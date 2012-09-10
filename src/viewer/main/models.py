@@ -28,9 +28,9 @@ class YearlyPlan(models.Model):
 		verbose_name_plural = "Planos anuais"
 		
 	def __unicode__(self):
-		active = self.active_text[ self.is_active ]
-		return u"%s - %s dia(s) - %s hora(s)(%s)"%(
-		    self.project, self.remaingDays, self.hours, active,
+		active = self.active_text[ self.active ]
+		return u"%s - %s hora(s)(%s)"%(
+		    self.project, self.hours, active,
 		)
 	
 	@property
@@ -50,9 +50,13 @@ class YearlyPlan(models.Model):
 		return (not self.remaingDays > 0)
 	
 	@property
-	def is_active(self):
+	def _is_active(self):
 		""" ativo se não expirado e for um plano válido """
 		return (not self.expired and self.active)
+	
+	def get_start_date(self):
+		""" retorna a data em que o plano começou """
+		return self.created_at
 	
 ########################################################################
 class MonthlyPlan( models.Model ):
