@@ -4,6 +4,7 @@ from django import forms
 
 from models import Project, MonthlyPlan, HoursAdd, YearlyPlan
 import w_monthYear
+########################################################################
 
 period_object = HoursAdd._meta.get_field_by_name("period")[0]
 class HoursAddForm(forms.ModelForm):
@@ -12,7 +13,6 @@ class HoursAddForm(forms.ModelForm):
         widget = w_monthYear.MonthYearWidget
     )
     
-########################################################################
 starts_object = MonthlyPlan._meta.get_field_by_name("starts")[0]
 class MonthlyPlanForm(forms.ModelForm):
     starts = forms.DateField(
@@ -23,13 +23,22 @@ class MonthlyPlanForm(forms.ModelForm):
         exclude = ("finished", )
         
 ########################################################################
-class HoursAddInline(admin.TabularInline):
-    model = HoursAdd
+class HoursAdd_Inline(admin.TabularInline):
     form = HoursAddForm
+    model = HoursAdd
+    
+class MonthlyPlan_Inline(admin.StackedInline):
+    inlines = (HoursAdd_Inline, )
+    form = MonthlyPlanForm
+    model = MonthlyPlan
     
 ########################################################################
+class YearlyPlan_Admin(admin.ModelAdmin):
+    inlines = (MonthlyPlan_Inline,)
+ 
+########################################################################
 class MonthlyPlan_Admin(admin.ModelAdmin):
-    inlines = (HoursAddInline, )
+    inlines = (HoursAdd_Inline, )
     form = MonthlyPlanForm
     
     def save_model(self, request, obj, form, change):
@@ -77,6 +86,6 @@ class HoursAdd_Admin(admin.ModelAdmin):
 
 ########################################################################
 admin.site.register(Project)
-admin.site.register(YearlyPlan)
+admin.site.register(YearlyPlan, YearlyPlan_Admin)
 admin.site.register(MonthlyPlan, MonthlyPlan_Admin)
-admin.site.register(HoursAdd, HoursAdd_Admin)
+#admin.site.register(HoursAdd, HoursAdd_Admin)
