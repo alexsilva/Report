@@ -125,18 +125,25 @@ class Redmine(object):
 
     def update_statistic(self, issue):
         _issue = issue["issue"]
+        issue_created_on = _issue["created_on"]
+        
+        # ignora issues anteriores a data do plano anual
+        created_dt = shared.convertToDatetime( issue_created_on )
+        start_dt = self.statistic.yearlyPlanStartDate
+        
+        #if (created_dt.date() - start_dt).days < 0: return
+        
         estimated = int(_issue.get("estimated_hours", 0.0))
         spent = int(_issue.get("spent_hours", 0.0))
         self.statistic["estimated"] += estimated
         self.statistic["spent"] += spent
+        
         # o uso externo da instace de 'statistic', garante a soma de todos os meses
         self.statistic.add_yearly_spent( spent )
         
         static = shared.ReportHeader.getBaseDict()
         static["project"] = self.statistic["project"]
-        created = shared.getFormatedDate(
-            _issue.get("created_on", self.statistic.get_date()))
-        static["created"] = created
+        static["created"] = shared.getFormatedDate(issue_created_on)
         static["estimated"] = estimated
         static["spent"] = spent
         
