@@ -50,12 +50,6 @@ def get_params(request):
     return param
 
 def get_response(request, param, **params):
-    html = {
-        "project_id_selected": param.project_id,
-        "year_check": param.yearly_report,
-        "detail_check": param.detail_view,
-        "detail_view": param.detail_view
-    }
     dateInputForm.fields["period"].initial = {
         "month": param.period_month, 
         "year": param.period_year
@@ -77,7 +71,10 @@ def get_response(request, param, **params):
         "params": {
             "yearly_report": param.yearly_report,
             "detail_view": param.detail_view,
-            "statistic": statistic
+            "statistic": statistic,
+            # html params
+            "project_id_selected": param.project_id,
+            "year_check": param.yearly_report,          
         },
         "projects": [(q.key, q.name) for q in Project.objects.all()],
         "date_now": date_now.strftime("%d de %b de %Y"),
