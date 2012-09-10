@@ -78,6 +78,5 @@ def get_response(request, param, **params):
         },
         "projects": [(q.key, q.name) for q in Project.objects.all()],
         "date_now": date_now.strftime("%d de %b de %Y"),
-        "html": html
     })
     return response	
