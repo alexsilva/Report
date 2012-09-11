@@ -45,8 +45,8 @@ class TableHeader(object):
         return [e[-1] for e in cls.simple]
     @classmethod
     def getBaseDict(cls, full=True):
-        if full: headers = cls.getFullHeaderItem()
-        else: headers = cls.getSimpleHeaderItem()
+        if full: headers = cls.get_full_item()
+        else: headers = cls.get_simple_item()
         return dict([(key,None) for key in headers])
     
 ########################################################################
