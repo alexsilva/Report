@@ -22,7 +22,7 @@ def report_load(request):
             param.project_id, param.period_year, 
             param.period_month)
         
-        if statistic.hasYealyPlan() and statistic.yearlyplan.is_active:
+        if statistic.hasYearlyPlan and statistic.yearlyplan.is_active:
             for month in xrange(month_start, month_end+1):
                 if not statistic.isValidMonthYear(month, param.period_year):
                     continue
