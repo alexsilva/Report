@@ -57,11 +57,11 @@ def get_response(request, param, **params):
     statistic = params["statistic"]
     
     if param.detail_view:
-        headers = shared.ReportHeader.getSimpleHeader()
-        headersItem = shared.ReportHeader.getSimpleHeaderItem()
+        headers = shared.TableHeader.get_simple()
+        headersItem = shared.TableHeader.get_simple_item()
     else:
-        headers = shared.ReportHeader.getFullHeader()
-        headersItem = shared.ReportHeader.getFullHeaderItem()
+        headers = shared.TableHeader.get_full()
+        headersItem = shared.TableHeader.get_full_item()
         
     response = render_to_response("main.html", {
         "widgetTitle": params["title"],

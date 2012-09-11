@@ -141,7 +141,7 @@ class Redmine(object):
         # o uso externo da instace de 'statistic', garante a soma de todos os meses
         self.statistic.add_yearly_spent( spent )
         
-        static = shared.ReportHeader.getBaseDict()
+        static = shared.TableHeader.getBaseDict()
         static["project"] = self.statistic["project"]
         static["created"] = shared.getFormatedDate(issue_created_on)
         static["estimated"] = estimated

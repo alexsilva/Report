@@ -153,7 +153,7 @@ class Zendesk(object):
         self.statistic.add_yearly_spent( spent )
         self.update_remainder()
         
-        static = shared.ReportHeader.getBaseDict()
+        static = shared.TableHeader.getBaseDict()
         created = shared.getFormatedDate( ticket_created_at )
         static["created"] = created
         static["estimated"] = estimated

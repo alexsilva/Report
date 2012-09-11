@@ -13,7 +13,7 @@ def getFormatedDate(dateString):
 def convertToDatetime(dataString):
     return parser.parse( dataString )
     
-class ReportHeader(object):
+class TableHeader(object):
     """ armazena os headers da representação dos dados """
     full = (
         ("Data", "created"),
@@ -32,16 +32,16 @@ class ReportHeader(object):
         ("Horas Gastas", "spent")
     )
     @classmethod
-    def getFullHeader(cls):
+    def get_full(cls):
         return [e[0] for e in cls.full]
     @classmethod
-    def getFullHeaderItem(cls):
+    def get_full_item(cls):
         return [e[-1] for e in cls.full]
     @classmethod
-    def getSimpleHeader(cls):
+    def get_simple(cls):
         return [e[0] for e in cls.simple]
     @classmethod
-    def getSimpleHeaderItem(cls):
+    def get_simple_item(cls):
         return [e[-1] for e in cls.simple]
     @classmethod
     def getBaseDict(cls, full=True):
