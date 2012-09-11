@@ -131,7 +131,7 @@ class Redmine(object):
         created_dt = shared.convertToDatetime( issue_created_on )
         start_dt = self.statistic.yearlyPlanStartDate
         
-        #if (created_dt.date() - start_dt).days < 0: return
+        if (created_dt.date() - start_dt).days < 0: return
         
         estimated = int(_issue.get("estimated_hours", 0.0))
         spent = int(_issue.get("spent_hours", 0.0))
