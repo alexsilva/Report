@@ -30,8 +30,8 @@ def get_hlist_groups(elements, headersItem):
     return list_group
 
 # --------------------------------------------------------------------
-def get_params(request):
-    class param(object):
+def get_query(request):
+    class Query(object):
         __all__ = {
             "project_id": ("", str), 
             "period_month": (date_now.month, int), 
@@ -46,17 +46,17 @@ def get_params(request):
                 v = conv(request.GET.get(name, d))
                 setattr(cls, name, v)
     # atribuindo os parametros à classe
-    param.attrs(request)
-    return param
+    Query.attrs(request)
+    return Query
 
-def get_response(request, param, **params):
+def get_response(request, query, **params):
     dateInputForm.fields["period"].initial = {
-        "month": param.period_month, 
-        "year": param.period_year
+        "month": query.period_month, 
+        "year": query.period_year
     }
     statistic = params["statistic"]
     
-    if param.detail_view:
+    if query.detail_view:
         headers = shared.TableHeader.get_simple()
         headersItem = shared.TableHeader.get_simple_item()
     else:
@@ -69,12 +69,12 @@ def get_response(request, param, **params):
         "headers": headers,
         "rlist": get_hlist_groups(params["statistic_data"], headersItem),
         "params": {
-            "yearly_report": param.yearly_report,
-            "detail_view": param.detail_view,
+            "yearly_report": query.yearly_report,
+            "detail_view": query.detail_view,
             "statistic": statistic,
             # html params
-            "project_id_selected": param.project_id,
-            "year_check": param.yearly_report,          
+            "project_id_selected": query.project_id,
+            "year_check": query.yearly_report,          
         },
         "projects": [(q.key, q.name) for q in Project.objects.all()],
         "date_now": date_now.strftime("%d de %b de %Y"),
