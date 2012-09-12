@@ -90,16 +90,15 @@ class Statistic(object):
                 monthlyPlan = self.yearlyplan.monthlyplan_set.filter(
                     starts__lte = date.isoformat(), finished = None
                 )
-            try:
-                monthlyPlan = monthlyPlan[monthlyPlan.count()-1]
-                plan_hours = monthlyPlan.hours
-            except Exception:
-                plan_hours = 0.0
-                
+                if monthlyPlan.count() > 0:
+                    monthlyPlan = monthlyPlan[monthlyPlan.count()-1]
+                    plan_hours = monthlyPlan.hours
+                else:
+                    plan_hours = 0.0 # o plano ainda não existe.
             try: # pesquisando as horas adicionais, atreladas ao plano mensal.
                 hours_add = sum([
                     hoursadd.hours 
-                    for hoursadd in monthlyPlan.hoursadd_set.filter(
+                    for hoursadd in self.yearlyplan.hoursadd_set.filter(
                         period__month = month, period__year = year
                     )
                 ])
