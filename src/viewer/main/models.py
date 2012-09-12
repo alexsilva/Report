@@ -4,9 +4,9 @@ import datetime
 
 ########################################################################
 class Project( models.Model ):
-	## CharField cannot have a "max_length" greater than 255 when using "unique=True".
-	key = models.CharField("Indentificador", max_length=255, unique=True) # 
 	name = models.CharField("Nome", max_length=300)
+	key = models.CharField("Identificador", max_length=255, unique=True)
+	tag = models.CharField("Palavra chave", max_length=255, blank=True, null=True, unique=True)
 	
 	class Meta:
 		verbose_name = "Projeto"

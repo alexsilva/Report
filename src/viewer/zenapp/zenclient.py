@@ -75,7 +75,7 @@ class Zendesk(object):
             client_args = {"disable_ssl_certificate_validation": True}
         )
         self.statistic = statistic
-        self.organization = self.statistic.project.name
+        self.project = statistic.project
         self.ticket_statistics = []
         
         self.field_entries = "ticket_field_entries"
@@ -91,11 +91,15 @@ class Zendesk(object):
         
         start = "%d-%02d-%02d"%(date.year, date.month, 1)
         finish = "%d-%02d-%02d"%(date.year, date.month, date.day)
-        
         created = "created>%s created<%s"%(start, finish)
-        organization = "organization:\"%s\""% self.organization
-        query = "type:ticket %s %s"%(created, organization)
-        print query
+        
+        tagname = self.project.tag
+        orgname = self.project.name
+        
+        if not tagname: param = "organization:\"%s\"" % orgname
+        else: param = "tags:%s" % tagname
+        
+        query = "type:ticket %s %s"%(created, param); print query
         return self.zen.search(query = query, page = 0)
     
     def submitter_handle(self, user_id):
