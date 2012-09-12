@@ -120,7 +120,9 @@
       ],
       "aaData": [
         {% for slist in rlist %} [
-          {% for item in slist %} "{{ item }}",
+          {% for item in slist %}
+			{% if item.link and item.label %}'<a href="{{item.link}}" target="_blank">{{item.label}}</a>'
+			{% else %}"{{ item }}"{% endif %},
           {% endfor %}],
         {% endfor %}]
     });

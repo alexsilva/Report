@@ -65,12 +65,12 @@ class Zendesk(object):
     use_api_token = cred_params.as_bool("use_api_token")
     password = cred_params["password"]
     email = cred_params["email"]
-    url = cred_params["url"]
+    site = cred_params["url"]
     
     name = "ZENDESK"
     #----------------------------------------------------------------------
     def __init__(self, project_id, year=0, month=0, statistic=None):
-        self.zen = zendesk.Zendesk(self.url, self.email, 
+        self.zen = zendesk.Zendesk(self.site, self.email, 
             self.password, use_api_token = self.use_api_token,
             client_args = {"disable_ssl_certificate_validation": True}
         )
@@ -93,7 +93,7 @@ class Zendesk(object):
         finish = "%d-%02d-%02d"%(date.year, date.month, date.day)
         
         created = "created>%s created<%s"%(start, finish)
-        organization = "organization:%s"% self.organization
+        organization = "organization:\"%s\""% self.organization
         query = "type:ticket %s %s"%(created, organization)
         print query
         return self.zen.search(query = query, page = 0)
@@ -160,8 +160,10 @@ class Zendesk(object):
         static["spent"] = spent
         
         nice_id = ticket.get("nice_id", 0)
-        static["id"] = "#%s"%nice_id
-        
+        static["id"] = {
+            "link": self.site+"/agent/#/tickets/%s"%str(nice_id),
+            "label": "#"+str(nice_id)
+        }
         subject = ticket.get("subject", "...")
         static["subject"] = subject
         

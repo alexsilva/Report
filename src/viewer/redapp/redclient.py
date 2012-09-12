@@ -148,8 +148,10 @@ class Redmine(object):
         static["spent"] = spent
         
         nice_id = _issue.get("id", -1)
-        static["id"] = "#%s"%nice_id
-        
+        static["id"] = {
+            "link": self.site+"/issues/%s"%str(nice_id),
+            "label": "#"+str(nice_id)
+        }
         subject = _issue.get("subject", "...")
         static["subject"] = subject
         
