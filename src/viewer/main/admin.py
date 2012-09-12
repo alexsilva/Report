@@ -4,15 +4,17 @@ from django import forms
 
 from models import Project, MonthlyPlan, HoursAdd, YearlyPlan
 import w_monthYear
-########################################################################
 
+#######################################################################
 period_object = HoursAdd._meta.get_field_by_name("period")[0]
 class HoursAddForm(forms.ModelForm):
     period = forms.DateField(
         label = period_object.verbose_name, help_text = period_object.help_text, 
         widget = w_monthYear.MonthYearWidget
     )
-    
+    class Meta:
+        fields = ("hours", "period")
+        
 starts_object = MonthlyPlan._meta.get_field_by_name("starts")[0]
 finished_object = MonthlyPlan._meta.get_field_by_name("finished")[0]
 class MonthlyPlanForm(forms.ModelForm):
@@ -24,11 +26,9 @@ class MonthlyPlanForm(forms.ModelForm):
         label = finished_object.verbose_name, help_text = finished_object.help_text, 
         widget = w_monthYear.MonthYearWidget,
         required = False
-    )    
-    #class Meta:
-        #exclude = ("finished", )
-        
-########################################################################
+    )
+
+#######################################################################
 class HoursAddInline(admin.TabularInline):
     form = HoursAddForm
     model = HoursAdd
@@ -48,5 +48,6 @@ class HoursAddAdmin(admin.ModelAdmin):
 ########################################################################
 admin.site.register(Project)
 admin.site.register(YearlyPlan, YearlyPlanAdmin)
-## admin.site.register(MonthlyPlan, MonthlyPlanAdmin)
+
+#admin.site.register(MonthlyPlan, MonthlyPlanAdmin)
 #admin.site.register(HoursAdd, HoursAddAdmin)

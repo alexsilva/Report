@@ -29,7 +29,7 @@ class YearlyPlan(models.Model):
 		
 	def __unicode__(self):
 		active = self.active_text[ self.active ]
-		return u"%s - %s hora(s)(%s)"%(
+		return u"%s - %s hora(s) (%s)"%(
 		    self.project, self.hours, active,
 		)
 	
@@ -76,24 +76,17 @@ class MonthlyPlan( models.Model ):
 		verbose_name_plural = "Planos mensais"
 		
 	def __unicode__(self):
-		projeto = "Plano anual: %s"%self.yearlyplan
-		
-		from_month = u"De: " + self.starts.strftime("%m/%Y")
+		from_month = u"De: "+self.starts.strftime("%m/%Y")
 		to_month = u"Até: "
-		
 		try: to_month += self.finished.strftime("%m/%Y")
-		except: to_month += u"Indefinido"
-		
-		horas_mensais = u"Horas mensais: %.2fh (%s - %s)"%(self.hours, from_month, to_month)
-		return u"%s - %s"%(projeto, horas_mensais)
+		except: to_month += u"---/---"
+		return u"Horas mensais: %.2fh (%s - %s)"%(self.hours, from_month, to_month)
 	
 ########################################################################
 class HoursAdd( models.Model ):
-	##monthlyPlan = models.ForeignKey(MonthlyPlan, verbose_name = MonthlyPlan._meta.verbose_name)
 	yearlyplan = models.ForeignKey(YearlyPlan, verbose_name=YearlyPlan._meta.verbose_name)
-	
-	hours = models.FloatField("Horas adicionais", blank=True, null=True)
 	period = models.DateField(u"No mês-ano", help_text=u"mês e ano, dentro dos quais, a hora adicional terá validade.")
+	hours = models.FloatField("Horas adicionais", blank=True, null=True)
 	
 	class Meta:
 		verbose_name = "Hora adicional"
