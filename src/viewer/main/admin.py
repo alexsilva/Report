@@ -14,78 +14,39 @@ class HoursAddForm(forms.ModelForm):
     )
     
 starts_object = MonthlyPlan._meta.get_field_by_name("starts")[0]
+finished_object = MonthlyPlan._meta.get_field_by_name("finished")[0]
 class MonthlyPlanForm(forms.ModelForm):
     starts = forms.DateField(
         label = starts_object.verbose_name, help_text = starts_object.help_text, 
         widget = w_monthYear.MonthYearWidget
     )
-    class Meta:
-        exclude = ("finished", )
+    finished = forms.DateField(
+        label = finished_object.verbose_name, help_text = finished_object.help_text, 
+        widget = w_monthYear.MonthYearWidget,
+        required = False
+    )    
+    #class Meta:
+        #exclude = ("finished", )
         
 ########################################################################
-class HoursAdd_Inline(admin.TabularInline):
+class HoursAddInline(admin.TabularInline):
     form = HoursAddForm
     model = HoursAdd
     
-class MonthlyPlan_Inline(admin.StackedInline):
-    inlines = (HoursAdd_Inline, )
+class MonthlyPlanInline(admin.TabularInline):
     form = MonthlyPlanForm
     model = MonthlyPlan
     
 ########################################################################
-class YearlyPlan_Admin(admin.ModelAdmin):
-    inlines = (MonthlyPlan_Inline,)
- 
-########################################################################
-class MonthlyPlan_Admin(admin.ModelAdmin):
-    inlines = (HoursAdd_Inline, )
-    form = MonthlyPlanForm
+class YearlyPlanAdmin(admin.ModelAdmin):
+    inlines = (MonthlyPlanInline, HoursAddInline)
     
-    def save_model(self, request, obj, form, change):
-        try:
-            lastPlan = MonthlyPlan.objects.filter(project__key=obj.project.key)
-            lastPlan = lastPlan.order_by("starts")
-            lastPlan = lastPlan[lastPlan.count()-1]
-        except:
-            lastPlan = None
-            
-        if change: # guarda a referencia para o obj antigo.
-            try: obj_before_save = MonthlyPlan.objects.get(pk=obj.pk)
-            except: obj_before_save = None
-            
-        obj.save() # salvando o modelo prinicipal.
-        
-        if not change and lastPlan:
-            # o ultimo plano termina no começo do plano atual.
-            if obj.starts >= lastPlan.starts:
-                lastPlan.finished = obj.starts
-                lastPlan.save()
-        else:
-            # busca o plano imediatamente anterior a este.
-            try:
-                previousPlan = MonthlyPlan.objects.filter(
-                    project__key = obj_before_save.project.key,
-                    starts__lte = obj_before_save.starts, 
-                    finished__gte = obj_before_save.starts,
-                    pk__lt = obj.pk
-                )
-                previousPlan = previousPlan[previousPlan.count()-1]
-            except:
-                previousPlan = None
-                
-            # asegura que o plano anterior, sempre fecha no começo do atual.
-            if previousPlan and obj.starts != previousPlan.finished:
-                # impede que o plano termine anterior a quando começou.
-                if obj.starts >= previousPlan.starts:
-                    previousPlan.finished = obj.starts
-                    previousPlan.save()
-                    
 ########################################################################
-class HoursAdd_Admin(admin.ModelAdmin):
+class HoursAddAdmin(admin.ModelAdmin):
     form = HoursAddForm
 
 ########################################################################
 admin.site.register(Project)
-admin.site.register(YearlyPlan, YearlyPlan_Admin)
-admin.site.register(MonthlyPlan, MonthlyPlan_Admin)
-#admin.site.register(HoursAdd, HoursAdd_Admin)
+admin.site.register(YearlyPlan, YearlyPlanAdmin)
+## admin.site.register(MonthlyPlan, MonthlyPlanAdmin)
+#admin.site.register(HoursAdd, HoursAddAdmin)

@@ -69,7 +69,7 @@ class MonthlyPlan( models.Model ):
 	
 	hours = models.FloatField("Plano mensal")
 	starts = models.DateField("Apartir de", help_text=u"O plano será válido, apartir desse mês.")
-	finished = models.DateField("Terminou em", blank=True, null=True)
+	finished = models.DateField("Termina em", blank=True, null=True)
 	
 	class Meta:
 		verbose_name = "Plano mensal"
@@ -89,9 +89,11 @@ class MonthlyPlan( models.Model ):
 	
 ########################################################################
 class HoursAdd( models.Model ):
-	monthlyPlan = models.ForeignKey(MonthlyPlan, verbose_name = MonthlyPlan._meta.verbose_name)
+	##monthlyPlan = models.ForeignKey(MonthlyPlan, verbose_name = MonthlyPlan._meta.verbose_name)
+	yearlyplan = models.ForeignKey(YearlyPlan, verbose_name=YearlyPlan._meta.verbose_name)
+	
 	hours = models.FloatField("Horas adicionais", blank=True, null=True)
-	period = models.DateField(u"No mês", help_text=u"Mês, dentro do qual, a hora adicional terá validade.")
+	period = models.DateField(u"No mês-ano", help_text=u"mês e ano, dentro dos quais, a hora adicional terá validade.")
 	
 	class Meta:
 		verbose_name = "Hora adicional"
