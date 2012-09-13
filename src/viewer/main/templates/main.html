@@ -1,7 +1,7 @@
 <html>
   <head>
     <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" >
-    <title>{{widgetTitle}}</title>
+    <title>{{param.title}}</title>
     <style type="text/css" title="currentStyle">
       @import "/static/media/css/demo_table.css";
 	  
@@ -29,48 +29,140 @@
     <script type="text/javascript" src="/static/media/js/jquery.js"></script>
 	<script type="text/javascript" src="/static/media/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" src="/static/js/dateTables.plugins.js"></script>
-</head>
-<body>
-  <div id="toolbar">
-    <form name="input" action="" method="get" accept-charset="utf-8">
-      Projetos:
-	  <select name="project_id"/>
-		{% for key, value in projects %}
-		  <option value="{{key}}" {% if params.project_id_selected == key%} selected="selected"{% endif %}>{{value}}</option>
-		{% endfor %}
-	  </select>
-      Periodo: {% for field in dateInputForm %}{{ field }}{% endfor %}
-      Ano completo: <input type="checkbox" id="yearly_report" name="yearly_report" value="1" {% if params.yearly_report %}checked{%endif%}/>
-      Com detalhes: <input type="checkbox" id="detail_view" name="detail_view" value="1" {% if params.detail_view %}checked{%endif%}/>
-      <input type="submit" value="Pesquisar"/>
-    
-      <div id="zen_x_red">
-        <a href="{% url viewer.zenapp.views.report_load %}">Zendesk</a>&nbsp;
-        <a href="{% url viewer.redapp.views.report_load %}">Redmine</a>
-      </div>
-    </form>
-  </div>
-
-  <div id="date_now"><b>{{date_now}}</b></div>
-  {% if params.statistic.hasYearlyPlan and params.statistic.yearlyplan.is_active %}
-	{% if params.detail_view %}
-	  <div class="year_statistic">
-		{% if not params.yearly_report %}
-		  {% if params.statistic.checkMonthYear %}
+	<script type="text/javascript">
+	  $(document).ready(function() {
+		var oTable = $('#list_table').dataTable({
+		  "oLanguage": {
+			"sUrl": "/static/js/dataTable.oLanguage.txt"
+		  },
+		  "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
+		  "bAutoWidth": false,
+		  "bStateSave": true,
+		  "iDisplayLength": 25,
+		  
+		  "aoColumns": [
+			{% for header in  headers %}
+			  {"sTitle": "{{ header }}", "sClass":{% ifequal header "Assunto" %}"left"{% else %}"center"{% endifequal %} },
+			{% endfor %}
+		  ],
+		  
+		  "aaData": [
+			{% for slist in rlist %} [
+			  {% for item in slist %}
+				{% if item.link and item.label %}'<a href="{{item.link}}" target="_blank">{{item.label}}</a>'
+				{% else %}"{{ item }}"{% endif %},
+			  {% endfor %}],
+			{% endfor %}]
+		});
+	  
+		var report = new function() {
+		  this.nsp = {
+			  // desativa um objeto(element), marcando o checkbox alvo.
+			  disable : function(element_id, checkbox) {
+				  if (element_id[0] != "#") element_id = "#"+element_id
+				  var object = $( element_id );
+				  if ($( checkbox ).is(":checked")) {
+					  object.attr('disabled', 'disabled');
+				  } else {
+					  object.removeAttr('disabled');
+				  }
+			  },
+			  init: function() {
+				  var self = this;
+				  var checkbox = $("#yearly_report");
+				  checkbox.click(function () {
+					  self.disable("id_period_month", this);
+				  });
+				  this.disable("id_period_month", checkbox);
+			  }
+		  }
+		}
+	  report.nsp.init();
+	  });
+	</script>
+  </head>
+  <body>
+	<div id="toolbar">
+	  <form name="input" action="" method="get" accept-charset="utf-8">
+		Projetos:
+		<select name="project_id"/>
+		  {% for key, value in projects %}
+			<option value="{{key}}" {% if params.project_id_selected == key%} selected="selected"{% endif %}>{{value}}</option>
+		  {% endfor %}
+		</select>
+		Periodo: {% for field in dateInputForm %}{{ field }}{% endfor %}
+		Ano completo: <input type="checkbox" id="yearly_report" name="yearly_report" value="1" {% if params.yearly_report %}checked{%endif%}/>
+		Com detalhes: <input type="checkbox" id="detail_view" name="detail_view" value="1" {% if params.detail_view %}checked{%endif%}/>
+		<input type="submit" value="Pesquisar"/>
+	  
+		<div id="zen_x_red">
+		  <a href="{% url viewer.zenapp.views.report_load %}">Zendesk</a>&nbsp;
+		  <a href="{% url viewer.redapp.views.report_load %}">Redmine</a>
+		</div>
+		
+	  </form>
+	</div>
+  
+	<div id="date_now"><b>{{date_now}}</b></div>
+	{% if params.statistic.hasYearlyPlan and params.statistic.yearlyplan.is_active %}
+	  {% if params.detail_view %}
+		<div class="year_statistic">
+		  {% if not params.yearly_report %}
+			{% if params.statistic.checkMonthYear %}
+			  <div>
+				<table border="1" width="100%" rules="cols">
+				  <tr>
+					<td>Plano mensal: {{params.statistic.plan_hours}}h</td>
+					<td>Adicionais: {{params.statistic.hours_add}}h</td>
+					<td>Total: {{params.statistic.total_hours}}h</td>
+					<td>Estimado: {{params.statistic.estimated}}h</td>
+					<td>Consumido: {{params.statistic.spent}}h</td>
+					<td>Restante: {{params.statistic.remainder}}h</td>
+				  </tr>
+				</table>
+			  </div>
+			{% endif %}
+		  {% else %}
 			<div>
 			  <table border="1" width="100%" rules="cols">
 				<tr>
-				  <td>Plano mensal: {{params.statistic.plan_hours}}h</td>
-				  <td>Adicionais: {{params.statistic.hours_add}}h</td>
-				  <td>Total: {{params.statistic.total_hours}}h</td>
-				  <td>Estimado: {{params.statistic.estimated}}h</td>
-				  <td>Consumido: {{params.statistic.spent}}h</td>
-				  <td>Restante: {{params.statistic.remainder}}h</td>
+				  <td>Plano anual: {{params.statistic.yearly_hours}}h</td>
+				  <td>Consumido: {{params.statistic.yearly_spent}}h</td>
+				  <td>Restante: {{params.statistic.yearly_remainder}}h</td>
+				</tr>
+			  </table>
+			</div>
+		  {% endif %}
+		</div>
+	  {% endif %}
+	{% endif %}
+	
+	<div id="viewer_table">
+	  <table cellpadding="0" cellspacing="0" border="0" class="display" id="list_table"></table>
+	</div>
+	  <br/>
+	  <div class="year_statistic">
+	  {% if params.statistic.hasYearlyPlan and params.statistic.yearlyplan.is_active %}
+		{% if params.statistic.checkMonthYear %}
+		  {% if params.detail_view and not params.yearly_report%}
+			<div>
+			  <table border="1" width="100%" rules="cols">
+				<tr>
+					<td>Plano mensal: {{params.statistic.plan_hours}}h</td>
+					<td>Adicionais: {{params.statistic.hours_add}}h</td>
+					<td>Total: {{params.statistic.total_hours}}h</td>
+					<td>Estimado: {{params.statistic.estimated}}h</td>
+					<td>Consumido: {{params.statistic.spent}}h</td>
+					<td>Restante: {{params.statistic.remainder}}h</td>
 				</tr>
 			  </table>
 			</div>
 		  {% endif %}
 		{% else %}
+		  <div>Parece que o plano para esse ano, não inclui esse mês.</div>
+		{% endif %}
+		
+		{% if params.yearly_report %}
 		  <div>
 			<table border="1" width="100%" rules="cols">
 			  <tr>
@@ -81,101 +173,12 @@
 			</table>
 		  </div>
 		{% endif %}
-	  </div>
-	{% endif %}
-  {% endif %}
-  
-  <div id="viewer_table">
-	<table cellpadding="0" cellspacing="0" border="0" class="display" id="list_table"></table>
-  </div>
-  
-  <script type="text/javascript">
-	$(document).ready(function() {
-	  var oTable = $('#list_table').dataTable({
-		"oLanguage": {
-		  "sUrl": "/static/js/dataTable.oLanguage.txt"
-		},
-		"aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
-		"bAutoWidth": false,
-		"bStateSave": true,
-		"iDisplayLength": 25,
-		
-		"aoColumns": [
-		  {% for header in  headers %}
-			{"sTitle": "{{ header }}", "sClass":{% ifequal header "Assunto" %}"left"{% else %}"center"{% endifequal %} },
-		  {% endfor %}
-		],
-		
-		"aaData": [
-		  {% for slist in rlist %} [
-			{% for item in slist %}
-			  {% if item.link and item.label %}'<a href="{{item.link}}" target="_blank">{{item.label}}</a>'
-			  {% else %}"{{ item }}"{% endif %},
-			{% endfor %}],
-		  {% endfor %}]
-	  });
-	  var report = new function() {
-		this.nsp = {
-			// desativa um objeto(element), marcando o checkbox alvo.
-			disable : function(element_id, checkbox) {
-				if (element_id[0] != "#") element_id = "#"+element_id
-				var object = $( element_id );
-				if ($( checkbox ).is(":checked")) {
-					object.attr('disabled', 'disabled');
-				} else {
-					object.removeAttr('disabled');
-				}
-			},
-			init: function() {
-				var self = this;
-				var checkbox = $("#yearly_report");
-				checkbox.click(function () {
-					self.disable("id_period_month", this);
-				});
-				this.disable("id_period_month", checkbox);
-			}
-		}
-	  }
-	  report.nsp.init();
-	});
-  </script>
-	<br/>
-	<div class="year_statistic">
-	{% if params.statistic.hasYearlyPlan and params.statistic.yearlyplan.is_active %}
-	  {% if params.statistic.checkMonthYear %}
-		{% if params.detail_view and not params.yearly_report%}
-		  <div>
-			<table border="1" width="100%" rules="cols">
-			  <tr>
-				  <td>Plano mensal: {{params.statistic.plan_hours}}h</td>
-				  <td>Adicionais: {{params.statistic.hours_add}}h</td>
-				  <td>Total: {{params.statistic.total_hours}}h</td>
-				  <td>Estimado: {{params.statistic.estimated}}h</td>
-				  <td>Consumido: {{params.statistic.spent}}h</td>
-				  <td>Restante: {{params.statistic.remainder}}h</td>
-			  </tr>
-			</table>
-		  </div>
-		{% endif %}
 	  {% else %}
-		<div>Parece que o plano para esse ano, não inclui esse mês.</div>
+		{% if params.searching %}
+		  <div>Não há um plano anual, cadastrado(ativo) para está data(mês/ano).</div>
+		{% endif %}
 	  {% endif %}
-	  
-	  {% if params.yearly_report %}
-		<div>
-		  <table border="1" width="100%" rules="cols">
-			<tr>
-			  <td>Plano anual: {{params.statistic.yearly_hours}}h</td>
-			  <td>Consumido: {{params.statistic.yearly_spent}}h</td>
-			  <td>Restante: {{params.statistic.yearly_remainder}}h</td>
-			</tr>
-		  </table>
-		</div>
-	  {% endif %}
-	{% else %}
-	  <div>Não há um plano anual, cadastrado(ativo) para está data(mês/ano).</div>
-	{% endif %}
-  </div>
+	</div>
   </body>
 </html>
 
