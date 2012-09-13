@@ -6,17 +6,21 @@ from django.utils.dates import MONTHS
 from dateutil import parser
 import admin
 
+DATE_FORMAT = "%d/%m/%Y"
+HOUR_FORMAT = "%H:%M:%S"
+
 def getFormatedDate(dateString):
     p = parser.parse(dateString)
     return p.strftime("%d/%m/%Y às %H:%M:%S")
 
 def convertToDatetime(dataString):
     return parser.parse( dataString )
-    
+
 class TableHeader(object):
     """ armazena os headers da representação dos dados """
     full = (
         ("Data", "created"),
+        ("Hora", "created_hour"),
         ("Plano mensal", "plan_hours"),
         ("Horas Adicionais", "hours_add"),
         ("Horas Totais", "total_hours"),
@@ -26,6 +30,7 @@ class TableHeader(object):
     )
     simple = (
         ("Data", "created"),
+        ("Hora", "created_hour"),
         ("ID", "id"),
         ("Assunto", "subject"),
         ("Horas Estimadas", "estimated"),

@@ -102,6 +102,9 @@ class Zendesk(object):
         query = "type:ticket %s %s"%(created, param); print query
         return self.zen.search(query = query, page = 0)
     
+    def get_all_tags(self):
+        return self.zen.list_tags()
+        
     def submitter_handle(self, user_id):
         return self.zen.show_user(user_id=user_id)["email"]
     
@@ -140,7 +143,7 @@ class Zendesk(object):
         ticket_created_at = ticket["created_at"]
         
         # ignora tickets anteriores a data do plano anual
-        created_dt = shared.convertToDatetime( ticket_created_at )
+        created_dt = shared.parser.parse( ticket_created_at )
         start_dt = self.statistic.yearlyPlanStartDate
         
         if (created_dt.date() - start_dt).days < 0: return
@@ -158,15 +161,16 @@ class Zendesk(object):
         self.update_remainder()
         
         static = shared.TableHeader.getBaseDict()
-        created = shared.getFormatedDate( ticket_created_at )
-        static["created"] = created
+        static["created"] = created_dt.strftime( shared.DATE_FORMAT )
+        static["created_hour"] = created_dt.strftime( shared.HOUR_FORMAT )
+        
         static["estimated"] = estimated
         static["spent"] = spent
         
-        nice_id = ticket.get("nice_id", 0)
+        ticket_id = ticket.get("nice_id", 0)
         static["id"] = {
-            "link": self.site+"/agent/#/tickets/%s"%str(nice_id),
-            "label": "#"+str(nice_id)
+            "link": self.site+"/agent/#/tickets/%s"%str(ticket_id),
+            "label": "#"+str(ticket_id)
         }
         subject = ticket.get("subject", "...")
         static["subject"] = subject
@@ -182,7 +186,7 @@ if __name__ == "__main__":
         statistic.update(year, month)
         
         zen = Zendesk(project_id=project, year=year, month=month, statistic=statistic)
-        for d in  zen.get_statistc_data():
+        for d in  zen.get_all_tags():
             print d
         
         #for ticket in zen.get_tickets():

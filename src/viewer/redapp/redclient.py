@@ -23,11 +23,12 @@ cred_params = configobj.ConfigObj(crendpath)
 class Redmine(object):
     site = cred_params["site"]
     key = cred_params["key"]
+    headers = {"X-Redmine-API-Key": key}
+    
     # --------------------------------------------------------
     name = "REDMINE"
 
     def __init__(self, project_id="", month=0, year=0, offset=0, limit=100, statistic=None, **params):
-        self.headers = {"X-Redmine-API-Key": self.key}
         self.decoder = json.JSONDecoder()
         self.issues_statistics = []
         # gera a estatistica de horas
@@ -128,7 +129,7 @@ class Redmine(object):
         issue_created_on = _issue["created_on"]
         
         # ignora issues anteriores a data do plano anual
-        created_dt = shared.convertToDatetime( issue_created_on )
+        created_dt = shared.parser.parse( issue_created_on )
         start_dt = self.statistic.yearlyPlanStartDate
         
         if (created_dt.date() - start_dt).days < 0: return
@@ -143,14 +144,15 @@ class Redmine(object):
         
         static = shared.TableHeader.getBaseDict()
         static["project"] = self.statistic["project"]
-        static["created"] = shared.getFormatedDate(issue_created_on)
+        static["created"] = created_dt.strftime( shared.DATE_FORMAT )
+        static["created_hour"] = created_dt.strftime( shared.HOUR_FORMAT )
         static["estimated"] = estimated
         static["spent"] = spent
         
-        nice_id = _issue.get("id", -1)
+        issue_id = _issue.get("id", -1)
         static["id"] = {
-            "link": self.site+"/issues/%s"%str(nice_id),
-            "label": "#"+str(nice_id)
+            "link": self.site+"/issues/%s" % str(issue_id),
+            "label": "#"+str(issue_id)
         }
         subject = _issue.get("subject", "...")
         static["subject"] = subject
