@@ -1,4 +1,4 @@
-[{
+{
   "sProcessing":   "Processando...",
   "sLengthMenu":   "Mostrar _MENU_ registros",
   "sZeroRecords":  "Não foram encontrados resultados",
@@ -14,4 +14,4 @@
     "sNext":     "Seguinte",
     "sLast":     "Último"
   }
-}]
+}
