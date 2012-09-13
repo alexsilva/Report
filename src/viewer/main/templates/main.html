@@ -57,6 +57,30 @@
     
     var report = new function() {
       this.nsp = {
+        check_status: function() {
+          var total_hours = "{{params.statistic.total_hours}}"
+          var yearlyRemainder = "{{params.statistic.yearly_remainder}}"
+          var monthlyRemainder = "{{params.statistic.remainder}}"
+          var msg = "";
+          
+          var m_valid = "{{params.statistic.checkMonthYear}}"
+          var total = parseFloat(total_hours.replace(",","."))
+          var y_remainder = parseFloat(yearlyRemainder.replace(",","."));
+          var m_remainder = parseFloat(monthlyRemainder.replace(",","."));
+          var y_report = parseInt("{{params.yearly_report}}")
+          
+          if (y_remainder < 0.0 && y_report) {
+            msg = "O máximo de horas para esse 'plano anual', já foram alcançadas."
+          } else
+            if (m_remainder < 0.0) {
+              msg = "O máximo de horas para esse 'plano mensal', já foram alcançadas."
+            }
+            if (total <= 0.0 && m_valid == "True") {
+              msg = "O total de horas para esse mês é menor ou igual a zero."
+              msg += "\n  Suas configurações podem estar erradas."
+            }
+          if ( msg ) alert( msg );
+        },
         // desativa um objeto(element), marcando o checkbox alvo.
         disable : function(element_id, checkbox) {
           if (element_id[0] != "#") element_id = "#"+element_id
@@ -68,12 +92,16 @@
           }
         },
         init: function() {
-          var self = this;
+          var _this = this;
           var checkbox = $("#yearly_report");
-          checkbox.click(function () {
-            self.disable("id_period_month", this);
+          
+          checkbox.click(function() {
+            _this.disable("id_period_month", this);
           });
+          
           this.disable("id_period_month", checkbox);
+          // faz a verifiação dos dados do relatório.
+          setTimeout(this.check_status, 1000);
         }
       }
     }
