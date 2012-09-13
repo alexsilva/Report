@@ -49,13 +49,16 @@ def get_query(request):
     Query.attrs(request)
     return Query
 
+def is_searching(request):
+    return request.method == "GET" and bool(len(request.GET))
+
 def get_response(request, query, **params):
     dateInputForm.fields["period"].initial = {
         "month": query.period_month, 
         "year": query.period_year
     }
     statistic = params["statistic"]
-    
+    print request.method == "GET" and bool(len(request.GET))
     if query.detail_view:
         headers = shared.TableHeader.get_simple()
         headersItem = shared.TableHeader.get_simple_item()
@@ -64,7 +67,7 @@ def get_response(request, query, **params):
         headersItem = shared.TableHeader.get_full_item()
         
     response = render_to_response("main.html", {
-        "widgetTitle": params["title"],
+        "title": params["title"],
         "dateInputForm": dateInputForm,
         "headers": headers,
         "rlist": get_hlist_groups(params["statistic_data"], headersItem),
@@ -72,6 +75,7 @@ def get_response(request, query, **params):
             "yearly_report": query.yearly_report,
             "detail_view": query.detail_view,
             "statistic": statistic,
+            "searching": is_searching(request),
             # html params
             "project_id_selected": query.project_id,
             "year_check": query.yearly_report,          
