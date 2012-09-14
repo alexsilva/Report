@@ -77,6 +77,7 @@ class Statistic(object):
         
         # guarda as horas consumidas de todos o meses
         self.yearlySpent = 0.0
+        self.yearlyExtra = 0.0
         
     def update(self, year, month):
         self.date = date = self.getDateForYearMonth(year, month)
@@ -124,6 +125,9 @@ class Statistic(object):
             "hours_add":  hours_add,
             "remainder": 0.0,
         }
+        # soma de todas as horas, adicionais, do ano.
+        self.add_yearly_extra( hours_add )
+        
     def __str__(self):
         return "\n".join(["%s: %s"%(k, self.statistic[k])for k in self.statistic])
     
@@ -145,12 +149,19 @@ class Statistic(object):
     def get(self, name, default):
         return self.statistic.get(name, default)
     
-    def add_yearly_spent(self, value):
-        self.yearlySpent += value
+    def add_yearly_spent(self, v):
+        self.yearlySpent += v
+        
+    def add_yearly_extra(self, v):
+        self.yearlyExtra += v
     
     @property
     def yearly_spent(self):
         return self.yearlySpent
+    
+    @property
+    def yearly_extra(self):
+        return self.yearlyExtra
     
     @property
     def yearly_hours(self):
@@ -158,8 +169,12 @@ class Statistic(object):
         return getattr(self.yearlyplan,"hours",0.0)
     
     @property
+    def yearly_total_hours(self):
+        return (self.yearly_hours + self.yearly_extra)
+    
+    @property
     def yearly_remainder(self):
-        return (self.yearly_hours - self.yearly_spent)
+        return (self.yearly_total_hours - self.yearly_spent)
     
     @property
     def yearlyPlanStartDate(self):

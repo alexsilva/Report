@@ -109,21 +109,21 @@ class Redmine(object):
                 jd = resp.read(); resp.close()
                 yield self.decoder.decode(jd)
 
-    def update_remainder_hours(self):
+    def update_remainder(self):
         if self.statistic["total_hours"] > 0.0:
             remainder = self.statistic["total_hours"] - self.statistic["spent"]
             self.statistic["remainder"] = remainder	
-
+    
     def get_statistc_data(self, detail_view=False):
         for issue in self.get_issues():
             self.update_statistic( issue )
-        self.update_remainder_hours()
-        if detail_view:
-            data = self.issues_statistics
-        else:
-            data = self.statistic.get_data()
+            
+        self.update_remainder()
+        
+        if detail_view: data = self.issues_statistics
+        else: data = self.statistic.get_data()
         return data
-
+    
     def update_statistic(self, issue):
         _issue = issue["issue"]
         issue_created_on = _issue["created_on"]

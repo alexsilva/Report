@@ -132,11 +132,11 @@ class Zendesk(object):
     def get_statistc_data(self, detail_view=False):
         for ticket in self.get_tickets():
             self.update_statistic( ticket )
+            
         self.update_remainder()
-        if detail_view:
-            data = self.ticket_statistics
-        else:
-            data = self.statistic.get_data()
+        
+        if detail_view: data = self.ticket_statistics
+        else: data = self.statistic.get_data()
         return data
     
     def update_statistic(self, ticket):
@@ -158,7 +158,6 @@ class Zendesk(object):
         
         # o uso externo da instace de 'statistic', garante a soma de todos os meses
         self.statistic.add_yearly_spent( spent )
-        self.update_remainder()
         
         static = shared.TableHeader.getBaseDict()
         static["created"] = created_dt.strftime( shared.DATE_FORMAT )
