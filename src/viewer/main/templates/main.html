@@ -18,12 +18,17 @@
       color: blue;
       background-color: yellow;
     }
+	
     #zen_x_red {
       float: right;
       margin-right: 5;
     }
+	
     .year_statistic td {
       text-align: center;
+      font-size: 18;
+      color: blue;
+      background-color: yellow;
     }
     </style>
     <script type="text/javascript" src="/static/media/js/jquery.js"></script>
@@ -58,31 +63,28 @@
     var report = new function() {
       this.nsp = {
         check_status: function() {
-          var total_hours = "{{params.statistic.total_hours}}"
-          var yearlyRemainder = "{{params.statistic.yearly_remainder}}"
-          var monthlyRemainder = "{{params.statistic.remainder}}"
+          var totalHours = parseFloat("{{params.statistic.total_hours}}".replace(",","."))
+          var yearlyRemainder = parseFloat("{{params.statistic.yearly_remainder}}".replace(",","."))
+          var monthlyRemainder = parseFloat("{{params.statistic.remainder}}".replace(",","."))
           var yearlyActive = "{{params.statistic.yearlyplan.is_active}}"
-          var msg = "";
-          
-          var m_valid = "{{params.statistic.checkMonthYear}}"
-          var total = parseFloat(total_hours.replace(",","."))
-          var y_remainder = parseFloat(yearlyRemainder.replace(",","."));
-          var m_remainder = parseFloat(monthlyRemainder.replace(",","."));
-          var y_report = parseInt("{{params.yearly_report}}")
-          
+          var monthValid = "{{params.statistic.checkMonthYear}}"
+          var yearlyReport = parseInt("{{params.yearly_report}}")
+          var message = ""
+		  
           if (yearlyActive == "True") {
-            if (y_remainder < 0.0 && y_report) {
-              msg = "O máximo de horas para esse 'plano anual', já foram alcançadas."
+            if ( yearlyReport ) {
+			  if (yearlyRemainder < 0.0) message = "O máximo de horas para o 'plano anual' foi excedido.";
+			  if (yearlyRemainder == 0.0) message = "O máximo de horas para o 'plano anual' foi alcançado.";
             } else {
-              if (m_remainder < 0.0) {
-                msg = "O máximo de horas para esse 'plano mensal', já foram alcançadas."
-              }
-              if (total <= 0.0 && m_valid == "True") {
-                msg = "O total de horas para esse mês é menor ou igual a zero."
-                msg += "\n  Contate o administrado para resolver o problema."
+              if (monthlyRemainder < 0.0) message = "O máximo de horas para o 'plano mensal' já foi excedido.";
+			  if (monthlyRemainder == 0.0) message = "O máximo de horas para o 'plano mensal' já foi alcançado.";
+			  
+              if (totalHours <= 0.0 && monthValid == "True") {
+                message = "O total de horas para esse mês é menor ou igual a zero."
+                message += "\n  Contate o administrado para resolver o problema."
               }
             }
-            if ( msg ) alert( msg );
+            if ( message ) alert( message );
           }
         },
         // desativa um objeto(element), marcando o checkbox alvo.
