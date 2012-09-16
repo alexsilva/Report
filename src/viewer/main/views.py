@@ -1,8 +1,11 @@
 # -*- coding: UTF-8 -*-
 from django.shortcuts import render_to_response
 from django.http import HttpResponse
+import xhtml2pdf.pisa as pisa
+import cStringIO as StringIO
 from models import Project
 import shared, datetime
+from django.views.decorators.csrf import csrf_exempt
 
 date_now = datetime.datetime.now()
 dateInputForm = shared.DateInputForm()
@@ -83,4 +86,23 @@ def get_response(request, query, **params):
         "projects": [(q.key, q.name) for q in Project.objects.all()],
         "date_now": date_now.strftime("%d de %b de %Y"),
     })
-    return response	
+    return response
+
+@csrf_exempt
+def generate_pdf(request):
+    if request.POST:
+        try:
+            result = StringIO.StringIO()
+            pdf = pisa.CreatePDF(
+                StringIO.StringIO(request.POST["data"].encode("utf-8")),
+                result
+                )
+            
+            if not pdf.err:
+                return HttpResponse(
+                    result.getvalue(),
+                    mimetype='application/pdf')
+        except Exception as e:
+            print "PDF error: %s"%e
+            
+    return HttpResponse(u"<p>HTML passado via 'post' inválido</p>")
