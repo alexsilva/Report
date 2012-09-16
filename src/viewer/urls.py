@@ -7,6 +7,8 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url(r'^zendesk/', include('viewer.zenapp.urls')),
     url(r'^redmine/', include('viewer.redapp.urls')),
+    url(r'^main/', include('viewer.main.urls')),
+    
     url('^$', 'django.views.generic.simple.redirect_to', {'url': '/zendesk/'}),
     # Uncomment the admin/doc line below to enable admin documentation:
     # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
