@@ -21,12 +21,15 @@ select {
   color: blue;
   background-color: yellow;
 }
-#toolbar {
+div#toolbar {
   background-color: #CDC9A5;
   padding: 0px 0px 0px 0px;
 }
-#tableTooBar {
-  margin: 0px; padding: 1px;
+#toolbar table {
+  margin: 0px; padding: 0px;
+}
+#toolbar form {
+  margin: 1px;
 }
 #date_now {
   color: #556B2F;
