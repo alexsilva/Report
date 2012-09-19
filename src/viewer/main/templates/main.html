@@ -33,26 +33,34 @@
 		background-color: #CDC9A5;
 		padding: 0px 0px 0px 0px;
 	  }
-	  #form_toolbar {
-		margin: 1px; padding: 10px;
+	  #tableTooBar {
+		margin: 0px; padding: 1px;
 	  }
 	  #date_now {
 		color: #556B2F;
 		background-color: #EEE9BF;
 	  }
+	  #project_id { width: 300px; }
+	  #id_period_month { width: 125px; }
+	  #id_period_year { width: 80px; }
+	  
     </style>
     <script type="text/javascript" src="/static/media/js/jquery.js"></script>
 	<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.8.23/jquery-ui.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="/static/media/js/jquery.dataTables.js"></script>
     <script type="text/javascript" src="/static/media/js/dateTables.plugins.js"></script>
 	<script type="text/javascript" src="/static/media/js/jquery.wijmo-open.all.2.2.1.min.js"></script>
-    <script type="text/javascript"> $(document).ready(function() { {% include "ready.js" %} });</script>
+    <script type="text/javascript">
+		$(document).ready(function() {
+			{% include "ready.js" %}
+		});
+	</script>
 </head>
 
 <body>
   <div id="toolbar">
     <form name="form_toolbar" id="form_toolbar" action="" method="get" accept-charset="utf-8">
-	  <table>
+	  <table id="tableTooBar">
 		<tr>
 		  <td>
 			<label for="project_id">Projetos:</label>
@@ -66,19 +74,19 @@
 		  <td>Periodo: {% for field in dateInputForm %}{{ field }}{% endfor %}</td>
 		  
 		  <td>
-			<label for="yearly_report">Ano completo:</label>
+			<label for="yearly_report">Todos os meses</label>
 			<input type="checkbox" id="yearly_report" name="yearly_report" value="1" {% if params.yearly_report %}checked{%endif%}/>
 		  </td>
 		  
 		  <td>
-			<label for="detail_view">Com detalhes:</label>
+			<label for="detail_view">Com detalhes</label>
 			<input type="checkbox" id="detail_view" name="detail_view" value="1" {% if params.detail_view %}checked{%endif%}/>
 		  </td>
 		  <td><input type="submit" value="Pesquisar"/></td>
 		</tr>
 		<div id="zen_x_red">
-		  <a href="{% url viewer.zenapp.views.report_load %}">Zendesk</a>
 		  <a href="{% url viewer.redapp.views.report_load %}">Redmine</a>
+		  <a href="{% url viewer.zenapp.views.report_load %}">Zendesk</a>
 		</div>
 	  </table>
     </form>
