@@ -1,3 +1,7 @@
+@import "/static/css/demo_table.css";
+@import "/static/css/smoothness/jquery-ui-1.8.23.custom.css";
+@import "/static/css/jquery.wijmo-open.2.2.1.css";
+
 select {
   margin: 0 2;
 }
