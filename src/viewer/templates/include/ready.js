@@ -1,33 +1,31 @@
+$("#project_id, #id_period_month, #id_period_year").wijdropdown();
 $(":input[type='checkbox']").wijcheckbox();
-$("#project_id").wijdropdown();
-$("#id_period_month").wijdropdown();
-$("#id_period_year").wijdropdown();
 $(":input[type='submit']").button();
 
 var oTable = $('#list_table').dataTable({
-  "oLanguage": {
-  "sUrl": "/static/js/dataTable.oLanguage.txt"
-  },
-  "bJQueryUI": true,
-  "aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
-  "bAutoWidth": false,
-  "bStateSave": true,
-  "iDisplayLength": 25,
-
-  "aoColumns": [
-  {% for header in  headers %}
-	{"sTitle": "{{ header }}", "sClass":{% ifequal header "Assunto" %}"left"{% else %}"center"{% endifequal %} },
-  {% endfor %}
-  ],
-
-  "aaData": [
-  {% for slist in rlist %} [
-	{% for item in slist %}
-	  {% if item.link and item.label %}'<a href="{{item.link}}" target="_blank">{{item.label}}</a>'
-	  {% else %}"{{ item }}"{% endif %},
-	{% endfor %}],
-  {% endfor %}]
-});
+	"oLanguage": {
+	  "sUrl": "/static/js/dataTable.oLanguage.txt"
+	},
+	"bJQueryUI": true,
+	"aLengthMenu": [[25, 50, 100, -1], [25, 50, 100, "Todos"]],
+	"bAutoWidth": false,
+	"bStateSave": true,
+	"iDisplayLength": 25,
+  
+	"aoColumns": [
+	{% for header in  headers %}
+	  {"sTitle": "{{ header }}", "sClass":{% ifequal header "Assunto" %}"left"{% else %}"center"{% endifequal %} },
+	{% endfor %}
+	],
+  
+	"aaData": [
+	{% for slist in rlist %} [
+	  {% for item in slist %}
+		{% if item.link and item.label %}'<a href="{{item.link}}" target="_blank">{{item.label}}</a>'
+		{% else %}"{{ item }}"{% endif %},
+	  {% endfor %}],
+	{% endfor	%}]
+  });
 
 var report = new function() {
   this.namespace = {
