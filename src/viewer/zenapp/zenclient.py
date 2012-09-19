@@ -168,7 +168,7 @@ class Zendesk(object):
         
         ticket_id = ticket.get("nice_id", 0)
         static["id"] = {
-            "link": self.site+"/agent/#/tickets/%s"%str(ticket_id),
+            "link": self.site+"/tickets/%s"%str(ticket_id),
             "label": "#"+str(ticket_id)
         }
         subject = ticket.get("subject", "...")
