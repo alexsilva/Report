@@ -61,7 +61,7 @@ def get_response(request, query, **params):
         "year": query.period_year
     }
     statistic = params["statistic"]
-    print request.method == "GET" and bool(len(request.GET))
+    
     if query.detail_view:
         headers = shared.TableHeader.get_simple()
         headersItem = shared.TableHeader.get_simple_item()
