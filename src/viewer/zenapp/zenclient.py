@@ -94,9 +94,13 @@ class Zendesk(object):
         created = "created>%s created<%s"%(start, finish)
         
         tagname = self.project.tag
-        orgname = self.project.name
+        projname = self.project.name
         
-        if not tagname: param = "organization:\"%s\"" % orgname
+        try: projname = projname.decode("UTF-8")
+        except (UnicodeDecodeError, UnicodeEncodeError):
+            projname = projname.encode("UTF-8")
+        
+        if not tagname: param = "organization:\"%s\"" % projname
         else: param = "tags:%s" % tagname
         
         query = "type:ticket %s %s"%(created, param); print query
