@@ -1,0 +1,14 @@
+eclipse.preferences.version=1
+encoding//src/viewer/main/admin.py=UTF-8
+encoding//src/viewer/main/models.py=utf-8
+encoding//src/viewer/main/shared.py=UTF-8
+encoding//src/viewer/main/urls.py=utf-8
+encoding//src/viewer/main/views.py=UTF-8
+encoding//src/viewer/redapp/redclient.py=UTF-8
+encoding//src/viewer/redapp/urls.py=utf-8
+encoding//src/viewer/redapp/views.py=UTF-8
+encoding//src/viewer/templates/include/ready.js=UTF-8
+encoding//src/viewer/zenapp/models.py=utf-8
+encoding//src/viewer/zenapp/urls.py=utf-8
+encoding//src/viewer/zenapp/views.py=UTF-8
+encoding//src/viewer/zenapp/zenclient.py=utf-8
